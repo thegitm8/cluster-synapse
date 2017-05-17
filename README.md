@@ -1,3 +1,6 @@
+# !!! This is not yet ready to use !!!
+
+
 # cluster-synapse
 
 `cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a wrapper around the native `cluster` module and gives you a simple API to send messages between the `worker` and `master` process, or between `worker`s.

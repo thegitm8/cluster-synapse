@@ -31,7 +31,7 @@ module.exports = (function clusterSynapse() {
 
 				// if master has any transformation listeners, run listeners on the data and send it back
 				if(_templates[message.type])
-					return send(message.type, Object.assign({},
+					return _send(message.type, Object.assign({},
 						message,
 						{
 							data: _shape(message.data, _templates[message.type])
@@ -39,7 +39,7 @@ module.exports = (function clusterSynapse() {
 					))
 
 				// else, just relay data to the worker processes
-				return send(message.type, message)
+				return _send(message.type, message)
 
 			})
 
@@ -61,11 +61,11 @@ module.exports = (function clusterSynapse() {
 	 * @param  {any}		message 	message can be of any serializable type
 	 * @param  {Boolean}	sendToSelf	determines if the worker wants to be included in the response
 	 * 
-	 * @return {void}					send has no return value
+	 * @return {void}					emit has no return value
 	 */
-	function send(type, message = {}, sendToSelf = false) {
+	function _send(type, message = {}, sendToSelf = false) {
 
-		// if send was called from master
+		// if emit was called from master
 		if(cluster.isMaster) {
 
 			Object.keys(cluster.workers)
@@ -103,7 +103,7 @@ module.exports = (function clusterSynapse() {
 	 * 
 	 * @return {Function} unlisten removes the listener function from the call stack
 	 */
-	function on(type, listener) {
+	function _on(type, listener) {
 
 		return _event.on(type, listener)
 
@@ -117,7 +117,7 @@ module.exports = (function clusterSynapse() {
 	 * 
 	 * @return {Function} unlisten removes the listener function from the call stack
 	 */
-	function once(type, listener) {
+	function _once(type, listener) {
 
 		return _event.once(type, listener)
 
@@ -131,7 +131,7 @@ module.exports = (function clusterSynapse() {
 	 * 
 	 * @return {void}				transform does not return
 	 */
-	function transform(type, listener) {
+	function _transform(type, listener) {
 
 		// transform can only be called from the master process
 		if(!cluster.isMaster)
@@ -147,11 +147,11 @@ module.exports = (function clusterSynapse() {
 	}
 
 	return {
-		on: on,
-		once: once,
-		send: send,
+		on: _on,
+		once: _once,
+		send: _send,
 		// master only
-		transform: transform
+		transform: _transform
 	}
 
 })()
