@@ -2,8 +2,6 @@ const cluster = require('cluster')
 const os = require('os')
 const synapse = require('../../cluster-synapse')
 
-console.log(synapse)
-
 if(cluster.isMaster) {
 
 	synapse.on('ping', () => console.log('pong'))
@@ -15,10 +13,6 @@ if(cluster.isMaster) {
 
 } else {
 
-	try{
-		synapse.send('ping')
-	} catch(err) {
-		console.log(err.message)
-	}
+	synapse.emit('ping')
 
 }
