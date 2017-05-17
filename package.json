@@ -1,23 +1,25 @@
 {
-  "name": "cluster-synapse-test",
+  "name": "cluster-synapse",
   "version": "0.1.0",
   "description": "Easy to use cluster communication tool.",
-  "main": "lib/index.js",
   "scripts": {
     "build": "./node_modules/.bin/babel src -d lib",
+    "dev": "./node_modules/.bin/babel src -d lib --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "IPC",
-    "cluster"
-  ],
-  "author": "Robert Docter <mail@gitm8.com>",
+  "keywords": [ "IPC", "cluster" ],
+  "author": "Robert Docter <mail@gitm8.com> (https://gitm8.com/)",
   "license": "MIT",
   "babel": {
     "presets": [
       "es2015"
     ]
   },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/thegitm8/cluster-synapse.git"
+  },
+  "main": "lib/cluster-synapse.js",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
