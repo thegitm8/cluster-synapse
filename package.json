@@ -3,11 +3,14 @@
   "version": "0.1.3",
   "description": "Event like cluster communication tool.",
   "scripts": {
-    "build": "rm -rf lib/ && ./node_modules/.bin/babel src --out-dir lib --ignore *.spec.js",
+    "build": "rm -rf lib/ && ./node_modules/.bin/babel src --out-dir lib --ignore test/*.spec.js",
     "dev": "./node_modules/.bin/babel src -d lib --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha test/cluster-synapse.spec.js"
   },
-  "keywords": [ "IPC", "cluster" ],
+  "keywords": [
+    "IPC",
+    "cluster"
+  ],
   "author": "Robert Docter <mail@gitm8.com> (https://gitm8.com/)",
   "license": "MIT",
   "babel": {
@@ -15,15 +18,16 @@
       "es2015"
     ]
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/thegitm8/cluster-synapse.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thegitm8/cluster-synapse.git"
   },
   "main": "lib/cluster-synapse.js",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-preset-es2015": "^6.24.1",
+    "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "express": "^4.15.2",
     "mocha": "^3.4.1",
