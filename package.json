@@ -1,9 +1,9 @@
 {
   "name": "cluster-synapse",
-  "version": "0.1.2",
-  "description": "Easy to use cluster communication tool.",
+  "version": "0.1.3",
+  "description": "Event like cluster communication tool.",
   "scripts": {
-    "build": "./node_modules/.bin/babel src -d lib",
+    "build": "rm -rf lib/ && ./node_modules/.bin/babel src --out-dir lib --ignore *.spec.js",
     "dev": "./node_modules/.bin/babel src -d lib --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
