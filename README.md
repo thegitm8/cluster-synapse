@@ -1,8 +1,6 @@
 # cluster-synapse
 
-**!! Not yet on npm**
-
-`cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a wrapper around the native `cluster` module and gives you a simple API to send messages between the `worker` and `master` process, or between `worker`s.
+`cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a wrapper around the native `cluster` module and gives you a simple API (very similar to events) to send messages between the `worker` and `master` process, or between `worker`s.
 It does not require you to make any changes to your current cluster setup.
 
 1. [Installation](#installation)
@@ -168,12 +166,12 @@ synapse.on('someEvent', msg => {
 #### once( messageType:String, message:Object)
 Same as `on`, but listener is called only on the first occurance of the event.
 
-#### send( messageType:String, message:Object, sendToSelf:Boolean)
-`send` sends a data object to all workers and can be used both on the master process and the worker. Both `data` and `sendToSelf` are optional. This way, you can use `send('someEvent')` to trigger actions on the workers which do not require additional data.
+#### emit( messageType:String, message:Object, sendToSelf:Boolean)
+`emit` sends a data object to all workers and can be used both on the master process and the worker. Both `data` and `sendToSelf` are optional. This way, you can use `emit('someEvent')` to trigger actions on the workers which do not require additional data.
 
 `sendToSelf` is only recognised when called from a worker process. The default behaviour of `send` on worker processes is, to send the event to it's sibling worker process, but not back to itself. You have to set `sendToSelf` to `true` if you want the worker process to be called back. `sendToSelf` needs to be `true` if you want to use `interceptor`s on the master process and your current process needs to get the intercepted data as well.
 
-Internally `send` determines the `worker`s to send the message to, by cheking `data.pid` on incoming messages from `worker` processes. If a `worker` sends a message and `sendToSelf` is set to `false` (default), the `master` process will not send his response to this particular `worker`.
+Internally `emit` determines the `worker`s to send the message to, by cheking `data.pid` on incoming messages from `worker` processes. If a `worker` sends a message and `sendToSelf` is set to `false` (default), the `master` process will not send his response to this particular `worker`.
 
 #### transform(messageType:String, interceptor:Function)
 `transform` is used to manipulate data on the master process and send the result back. Multiple `transform` listeners on the same event are called one after the other.

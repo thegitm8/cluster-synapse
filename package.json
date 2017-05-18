@@ -1,6 +1,6 @@
 {
   "name": "cluster-synapse",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Easy to use cluster communication tool.",
   "scripts": {
     "build": "./node_modules/.bin/babel src -d lib",
