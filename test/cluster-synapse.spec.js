@@ -24,7 +24,7 @@ describe('cluster-synapse', function() {
 				expect(listener.callCount).to.be.equal(2)
 				done()
 
-			}, 100)
+			}, 200)
 		})
 
 		it('Master process can send messages to workers.', function(done) {
@@ -44,7 +44,7 @@ describe('cluster-synapse', function() {
 				expect(listener.callCount).to.be.equal(2)
 				done()
 
-			}, 100)
+			}, 200)
 		})
 
 		it('Master process can receive messages with data from workers.', function(done) {
@@ -70,16 +70,20 @@ describe('cluster-synapse', function() {
 
 				done()
 
-			}, 100)
+			}, 200)
 		})
 
 		it('Master process can transform messages from workers.', function(done) {
 
 			const listener = sinon.spy()
-			const expectedData = 
+
 			cluster.setupMaster({ exec: 'test/worker/sendTransformedData.js' })
 			
-			synapse.transform('dataToTransform', data => { color: 'green'})
+			synapse.transform('dataToTransform', data => {
+
+				return { color: 'green' }
+
+			})
 
 			const worker = cluster.fork()
 
@@ -89,15 +93,11 @@ describe('cluster-synapse', function() {
 
 				expect(listener.callCount).to.be.equal(1)
 
-				sinon.assert.calledWith(listener, sinon.match({
-					data: { color: 'green' },
-					type: 'transformedData',
-					worker: worker
-				}))
+				sinon.assert.calledWith(listener, sinon.match({ data: { color: 'green' } }))
 
 				done()
 
-			}, 100)
+			}, 200)
 		})
 	})
 })

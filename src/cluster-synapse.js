@@ -29,8 +29,12 @@ module.exports = (function clusterSynapse() {
 					})
 
 				// if master has any transformation listeners, run listeners on the data and send it back
-				if(_templates[message.type])
-					return _emit(message.type,  { data: _shape(message.data, _templates[message.type]), pid: message.pid } )
+				if(_templates[message.type]) {
+
+					const transformedData = _shape(message.data, _templates[message.type])
+					return _emit(message.type,  { data: transformedData, pid: message.pid } )
+					
+				}
 
 				// else, just relay data to the worker processes
 				return _emit(message.type, message)
@@ -131,7 +135,6 @@ module.exports = (function clusterSynapse() {
 
 		// 
 		if(!_templates[type]) _templates[type] = []
-
 		_templates[type] = [].concat(_templates[type], listener)
 
 		return
