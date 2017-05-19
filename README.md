@@ -26,6 +26,7 @@ npm install --save cluster-synapse
 
 ## Usage
 
+### setup
 You have to require `cluster-synapse` at least once on the master process, to hook into the `cluster` module. Even if you do not use `cluster-synapse` directly on master.
 
 `master.js`
