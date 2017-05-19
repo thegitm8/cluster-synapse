@@ -12,8 +12,8 @@ It does not require you to make any changes to your current cluster setup.
 3. [API](#api)
 	1. [on](#on-messagetypestring-callbackfunction)
 	2. [once](#once-messagetypestring-messageobject)
-	3. [send](#send-messagetypestring-messageobject-sendtoselfboolean)
-	4. [shape](#shapemessagetypestring-interceptorfunction)
+	3. [emit](#emit-messagetypestring-messageobject-sendtoselfboolean)
+	4. [transform](#transformmessagetypestring-interceptorfunction)
 
 ## Installation
 `cluster-synapse` does not have any external dependencies.
@@ -60,10 +60,10 @@ The master process sends messages to all `workers`.
 
 ```javascript
 // send message to all worker processes without data
-synapse.send('justCalling')
+synapse.emit('justCalling')
 
 // send message to all worker processes with data
-synapse.send('somethingForYou', { gift: 'Surprise!' })
+synapse.emit('somethingForYou', { gift: 'Surprise!' })
 ```
 
 
@@ -73,13 +73,13 @@ By default a `worker` `send`s messages to other `worker`s via the `master` proce
 
 ```javascript
 // send message without data
-synapse.send('helloWorld')
+synapse.emit('helloWorld')
 
 // send message with data
-synapse.send('hereComesData', { stuff: 'I made this up...'})
+synapse.emit('hereComesData', { stuff: 'I made this up...'})
 
 // send message to all workers (including the worker sending the message)
-synapse.send('thisWillComeBackToMe', { stuff: 'Just stuff'}, true)
+synapse.emit('thisWillComeBackToMe', { stuff: 'Just stuff'}, true)
 ```
 
 ### receiving messages
@@ -96,13 +96,13 @@ synapse.on('msgToMaster', msg => {
 
 	/* do something with data */
 
-	synapse.send('msgFromMaster', { msg: 'Master did something and wants to tell you...'})
+	synapse.emit('msgFromMaster', { msg: 'Master did something and wants to tell you...'})
 
 })
 ```
 
 ### manipulating message data
-If you just want to manipulate data and send them back to the worker processes, you can use `synapse.shapeOn` in the `master` process.
+If you just want to manipulate data and send them back to the worker processes, you can use `synapse.transform` in the `master` process.
 
 ```javascript
 // 
@@ -128,7 +128,7 @@ If you register a listener function on the worker process, the listener receives
 
 ```javascript
 // send data somewhere
-synapse.send('someEvent', { stuff: 'Map to the gold.' })
+synapse.emit('someEvent', { stuff: 'Map to the gold.' })
 
 // receive data on the worker process
 synapse.on('someEvent', data => {
@@ -145,7 +145,7 @@ On the master process, the listener always receives an object containing the ins
 
 ```javascript
 // send data on the worker process
-synapse.send('someEvent', { stuff: 'Map to the gold.' })
+synapse.emit('someEvent', { stuff: 'Map to the gold.' })
 
 // getting data on the master process
 synapse.on('someEvent', msg => {
@@ -169,7 +169,7 @@ Same as `on`, but listener is called only on the first occurance of the event.
 #### emit( messageType:String, message:Object, sendToSelf:Boolean)
 `emit` sends a data object to all workers and can be used both on the master process and the worker. Both `data` and `sendToSelf` are optional. This way, you can use `emit('someEvent')` to trigger actions on the workers which do not require additional data.
 
-`sendToSelf` is only recognised when called from a worker process. The default behaviour of `send` on worker processes is, to send the event to it's sibling worker process, but not back to itself. You have to set `sendToSelf` to `true` if you want the worker process to be called back. `sendToSelf` needs to be `true` if you want to use `interceptor`s on the master process and your current process needs to get the intercepted data as well.
+`sendToSelf` is only recognised when called from a worker process. The default behaviour of `emit` on worker processes is, to send the event to it's sibling worker process, but not back to itself. You have to set `sendToSelf` to `true` if you want the worker process to be called back. `sendToSelf` needs to be `true` if you want to use `transform`ers on the master process and your current process needs to get the intercepted data as well.
 
 Internally `emit` determines the `worker`s to send the message to, by cheking `data.pid` on incoming messages from `worker` processes. If a `worker` sends a message and `sendToSelf` is set to `false` (default), the `master` process will not send his response to this particular `worker`.
 
@@ -178,7 +178,7 @@ Internally `emit` determines the `worker`s to send the message to, by cheking `d
 
 ```javascript
 // ######## worker.js
-synapse.send('ninjaEvent', { clothes: 'white', hidden: false })
+synapse.emit('ninjaEvent', { clothes: 'white', hidden: false })
 
 // ######## master.js
 synapse.transform('ninjaEvent', data => {
