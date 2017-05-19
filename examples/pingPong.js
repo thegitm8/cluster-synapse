@@ -1,15 +1,12 @@
 const cluster = require('cluster')
-const os = require('os')
-const synapse = require('../../cluster-synapse')
+const synapse = require('../src/cluster-synapse')
 
 if(cluster.isMaster) {
 
 	synapse.on('ping', () => console.log('pong'))
 
-	for(let i = 0; i < os.cpus().length; i++) {
-		cluster.fork()
+	cluster.fork()
 
-	}
 
 } else {
 
