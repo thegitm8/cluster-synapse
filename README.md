@@ -1,26 +1,28 @@
 # cluster-synapse
+![version](https://img.shields.io/npm/v/cluster-synapse.svg)
+![npm downloads](https://img.shields.io/npm/dt/cluster-synapse.svg)
+![liscense](https://img.shields.io/npm/l/cluster-synapse.svg)
 
-`cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a wrapper around the native `cluster` module and gives you a simple API (very similar to events) to send messages between the `worker` and `master` process, or between `worker`s.
+`cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a non-intrusive wrapper around the native `cluster` module and gives you an event like API to send messages between the `worker` and `master` process, or between `worker` processes.
+
+
 It does not require you to make any changes to your current cluster setup.
 
-1. [Installation](#installation)
-2. [Usage](#usage)
-	1. [Setup](#setup)
-	2. [sending messages](#sending-messages)
-	3. [receiving messages](#receiving-messages)
-	4. [manipulating message data](#manipulating-message-data)
-3. [API](#api)
-	1. [on](#on-messagetypestring-callbackfunction)
-	2. [once](#once-messagetypestring-messageobject)
-	3. [emit](#emit-messagetypestring-messageobject-sendtoselfboolean)
-	4. [transform](#transformmessagetypestring-interceptorfunction)
+* [Installation](#installation)
+* [Usage](#usage)
+	- [setup](#setup)
+	- [sending messages](#sending-messages)
+	- [receiving messages](#receiving-messages)
+	- [manipulating message data](#manipulating-message-data)
+
+=> [detailed API docs](https://github.com/thegitm8/cluster-synapse/blob/master/API.md)
 
 ## Installation
-`cluster-synapse` does not have any external dependencies.
 
 ```shell
 npm install --save cluster-synapse
 ```
+`cluster-synapse` does not have any external dependencies.
 
 
 
@@ -33,7 +35,7 @@ You have to require `cluster-synapse` at least once on the master process, to ho
 
 ```javascript
 const cluster 	= require('cluster')
-const os 		= require('os')
+const os 	= require('os')
 const synapse 	= require('cluster-synapse') // <= here
 
 const numWorkers = os.cpus().length
@@ -69,7 +71,7 @@ synapse.emit('somethingForYou', { gift: 'Surprise!' })
 
 `worker.js`
 
-By default a `worker` `send`s messages to other `worker`s via the `master` process. The `master` process is able to intercept worker messages by adding a `listener` to the messages type (`synapse.on('someType', interceptingFunction)`).
+By default a `worker` sends messages to other `worker`s via the `master` process. The `master` process is able to intercept worker messages by adding a `listener` to the messages type (`synapse.on('someType', interceptingFunction)`).
 
 ```javascript
 // send message without data
@@ -85,11 +87,18 @@ synapse.emit('thisWillComeBackToMe', { stuff: 'Just stuff'}, true)
 ### receiving messages
 `master.js`
 
-Setting a listener on the `master` process intercepts the message a worker is sending. Thus, making the master process responsible for further handling the message.
+Setting a listener on the `master` process intercepts the message a worker is sending. Thus, making the master process responsible for further handling the message. The listener receives a message object containing an instance of the sending worker, data (if send) and the type.
 
 ```javascript
 // receive message from worker, without notifying other worker processes (single worker to master communication)
-synapse.on('msgToMaster', msg => { /* do something with data */})
+synapse.on('msgToMaster', msg => {
+
+	const worker = msg.worker
+	const data = msg.data
+	const type = msg.type // in this case 'msgToMaster'
+
+	/* do something with data */
+})
 
 // receiving a message from a worker process and sending a message to all workers
 synapse.on('msgToMaster', msg => {
@@ -98,6 +107,23 @@ synapse.on('msgToMaster', msg => {
 
 	synapse.emit('msgFromMaster', { msg: 'Master did something and wants to tell you...'})
 
+})
+```
+
+`worker.js`
+
+If not intercepted by the `master` process, the worker process receives messages and the associated data by registering a listener on a specific event.
+
+```javascript
+
+synapse.on('randomEvent', () => {
+
+	/* event without data */
+})
+
+synapse.on('differentEventWithData', data => {
+
+	/* Do something with data */
 })
 ```
 

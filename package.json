@@ -1,6 +1,6 @@
 {
   "name": "cluster-synapse",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Event like cluster communication tool.",
   "scripts": {
     "build": "rm -rf lib/ && ./node_modules/.bin/babel src --out-dir lib --ignore test/*.spec.js",
