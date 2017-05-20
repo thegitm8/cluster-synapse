@@ -1,3 +1,5 @@
-.eslintrc
-examples
+examples/
 src/
+test/
+.eslintrc
+API.md
