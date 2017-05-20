@@ -12,8 +12,8 @@ It does not require you to make any changes to your current cluster setup.
 3. [API](#api)
 	1. [on](#on-messagetypestring-callbackfunction)
 	2. [once](#once-messagetypestring-messageobject)
-	3. [send](#send-messagetypestring-messageobject-sendtoselfboolean)
-	4. [shape](#shapemessagetypestring-interceptorfunction)
+	3. [emit](#emit-messagetypestring-messageobject-sendtoselfboolean)
+	4. [transform](#transformmessagetypestring-interceptorfunction)
 
 ## Installation
 `cluster-synapse` does not have any external dependencies.
@@ -26,7 +26,7 @@ npm install --save cluster-synapse
 
 ## Usage
 
-## Setup
+### setup
 You have to require `cluster-synapse` at least once on the master process, to hook into the `cluster` module. Even if you do not use `cluster-synapse` directly on master.
 
 `master.js`
@@ -60,10 +60,10 @@ The master process sends messages to all `workers`.
 
 ```javascript
 // send message to all worker processes without data
-synapse.send('justCalling')
+synapse.emit('justCalling')
 
 // send message to all worker processes with data
-synapse.send('somethingForYou', { gift: 'Surprise!' })
+synapse.emit('somethingForYou', { gift: 'Surprise!' })
 ```
 
 
@@ -73,13 +73,13 @@ By default a `worker` `send`s messages to other `worker`s via the `master` proce
 
 ```javascript
 // send message without data
-synapse.send('helloWorld')
+synapse.emit('helloWorld')
 
 // send message with data
-synapse.send('hereComesData', { stuff: 'I made this up...'})
+synapse.emit('hereComesData', { stuff: 'I made this up...'})
 
 // send message to all workers (including the worker sending the message)
-synapse.send('thisWillComeBackToMe', { stuff: 'Just stuff'}, true)
+synapse.emit('thisWillComeBackToMe', { stuff: 'Just stuff'}, true)
 ```
 
 ### receiving messages
@@ -96,21 +96,20 @@ synapse.on('msgToMaster', msg => {
 
 	/* do something with data */
 
-	synapse.send('msgFromMaster', { msg: 'Master did something and wants to tell you...'})
+	synapse.emit('msgFromMaster', { msg: 'Master did something and wants to tell you...'})
 
 })
 ```
 
 ### manipulating message data
-If you just want to manipulate data and send them back to the worker processes, you can use `synapse.shapeOn` in the `master` process.
+If you just want to manipulate data and send them back to the worker processes, you can use `synapse.transform` in the `master` process.
 
 ```javascript
 // 
-synapse.shapeOn('dataToProcess', data => {
+synapse.transform('dataToProcess', data => {
 	
 	data.foo = 'bar'
 
 	return data
 
 })
-```
