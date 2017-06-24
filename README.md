@@ -1,7 +1,10 @@
 # cluster-synapse
-![version](https://img.shields.io/npm/v/cluster-synapse.svg)
-![npm downloads](https://img.shields.io/npm/dt/cluster-synapse.svg)
-![liscense](https://img.shields.io/npm/l/cluster-synapse.svg)
+
+[![version](https://img.shields.io/npm/v/cluster-synapse.svg)](https://www.npmjs.com/package/cluster-synapse)
+[![npm downloads](https://img.shields.io/npm/dt/cluster-synapse.svg)](https://www.npmjs.com/package/cluster-synapse)
+[![liscense](https://img.shields.io/npm/l/cluster-synapse.svg)](https://www.npmjs.com/package/cluster-synapse)
+[![Known Vulnerabilities](https://snyk.io/test/github/thegitm8/cluster-synapse/badge.svg)](https://snyk.io/test/github/thegitm8/cluster-synapse)
+[![Build Status](https://travis-ci.org/thegitm8/cluster-synapse.svg?branch=master)](https://travis-ci.org/thegitm8/cluster-synapse)
 
 `cluster-synapse` is an easy to use, minimalistic `cluster` communication tool. It provides a non-intrusive wrapper around the native `cluster` module and gives you an event like API to send messages between the `worker` and `master` process, or between `worker` processes.
 
